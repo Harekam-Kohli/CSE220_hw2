@@ -14,23 +14,21 @@ int validateOutputFile(const char* filename);
 
 
 int validateInputFile(const char *fileName) {
-    // Check if the file exists and can be opened
     FILE *file = fopen(fileName, "r");
     if (file == NULL) {
-        return -1; // Error opening file
+        return -1; 
     }
     fclose(file);
-    return 0; // File exists and can be opened
+    return 0;
 }
 
 int validateOutputFile(const char *fileName) {
-    // Check if the file can be created for writing
     FILE *file = fopen(fileName, "w");
     if (file == NULL) {
-        return -1; // Error creating file
+        return -1;
     }
     fclose(file);
-    return 0; // File can be created for writing
+    return 0; 
 }
 
 int main(int argc, char* argv[]) {
@@ -38,7 +36,6 @@ int main(int argc, char* argv[]) {
     int iFlag = 0, oFlag = 0,cFlag=0,rFlag=0,pFlag=0;
     int status[10] = {0};
 
-    // Iterate through argument list
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-i") == 0) {
             if (iFlag) {
@@ -47,7 +44,7 @@ int main(int argc, char* argv[]) {
             if (i + 1 < argc && argv[i + 1][0] != '-') {
                 inputFileName = argv[i + 1];
                 iFlag++;
-                i++; // Skip the next argument since it's the parameter for -i
+                i++; 
             } else {
                 status[1]++;
             }
@@ -58,7 +55,7 @@ int main(int argc, char* argv[]) {
             if (i + 1 < argc && argv[i + 1][0] != '-') {
                 outputFileName = argv[i + 1];
                 oFlag++;
-                i++; // Skip the next argument since it's the parameter for -o
+                i++; 
             } else {
                 status[1]++;
             }
@@ -71,9 +68,6 @@ int main(int argc, char* argv[]) {
                 char *token = strtok(argv[i + 1], ",");
                 int index = 0;
                 while (token != NULL) {
-                    // Parse and validate each parameter for -c
-                    //int value = atoi(token);
-                    // Perform additional validation if needed
                     index++;
                     token = strtok(NULL, ",");
                 }
@@ -81,12 +75,10 @@ int main(int argc, char* argv[]) {
                 if(index!=4)
                     status[7]++; 
                 cFlag++;
-                i++; // Skip the next argument since it's the parameter for -c
+                i++; 
             } else {
                 status[6]++;
             }
-
-            // Extend with additional else if blocks for other options like -c, -p, -r
         }
         else if (strcmp(argv[i], "-p") == 0){
             if (pFlag) {
@@ -96,16 +88,13 @@ int main(int argc, char* argv[]) {
                 char *token = strtok(argv[i + 1], ",");
                 int index = 0;
                 while (token != NULL) {
-                    // Parse and validate each parameter for -p
-                    //int value = atoi(token);
-                    // Perform additional validation if needed
                     index++;
                     token = strtok(NULL, ",");
                 }
                 if(index!=2)
                     status[8]++;
                 pFlag++;
-                i++; // Skip the next argument since it's the parameter for -p
+                i++; 
             } else {
                 status[1]++;
             }
@@ -117,8 +106,6 @@ int main(int argc, char* argv[]) {
                 status[3]++;
             }
             if (i + 1 < argc && argv[i + 1][0] != '-') {
-                // Validate and parse parameters for -r
-                // Example: -r "stony brook university","fonts/font4.txt",1,80,10
                 char *token = strtok(argv[i + 1], ",");
                 int count = 0;
                 while (token != NULL) {
@@ -127,8 +114,6 @@ int main(int argc, char* argv[]) {
                         if(validateInputFile(token) == -1)
                             status[9]++;
                     }
-                    // Perform validation based on the parameter count
-                    // Example: Check if the first parameter is a string, second is a file, etc.
                     count++;
                     token = strtok(NULL, ",");
                 }
@@ -136,7 +121,7 @@ int main(int argc, char* argv[]) {
                     status[9]++;
                 }
                 rFlag++;
-                i++; // Skip the next argument since it's the parameter for -r
+                i++;
             } else {
                 status[1]++;
             }
@@ -147,7 +132,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // Validate mandatory arguments are provided
     if (!iFlag || !oFlag) {
         status[1]++;
     }
@@ -155,15 +139,13 @@ int main(int argc, char* argv[]) {
     if(pFlag>0 && cFlag == 0)
         status[6]++;
 
-    // Validate input and output files
     if (validateInputFile(inputFileName) != 0) {
         status[4]++;
     }
     if (validateOutputFile(outputFileName) != 0) {
         status[5]++;
     }
-
-    // Additional logic for processing images based on provided arguments
+        
     for(int i = 0; i<10;i++)
     {
         if(status[i])
